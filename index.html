@@ -6,119 +6,112 @@
   <title>QR Generator & Scanner</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 { margin-bottom: 15px; }
+    #qrcode, #reader {
+      margin: 20px auto;
+      padding: 15px;
+      background: white;
+      display: inline-block;
+      border: 2px solid #ddd;
+    }
+    input, button {
       padding: 10px;
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      color: #333;
+      font-size: 16px;
+      margin: 5px;
+      width: 80%;
+      max-width: 400px;
     }
-    .container { width: 95%; max-width: 500px; margin: auto; padding: 20px; }
-    h1 { margin: 20px 0; font-size: 2rem; }
-    input {
-      width: 100%; padding: 12px; border: 2px solid #ccc;
-      border-radius: 8px; font-size: 16px;
-    }
-    .btn-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
     button {
-      flex: 1; padding: 12px; border: none; border-radius: 8px;
-      font-size: 16px; cursor: pointer; font-weight: 600;
+      cursor: pointer;
+      background: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
     }
-    .generate-btn { background: #667eea; color: #fff; }
-    .download-btn { background: #28a745; color: #fff; display: none; }
-    .scan-btn { background: #ff9800; color: #fff; }
-    #qrcode { margin: 20px auto; display: inline-block; padding: 10px; background: white; border-radius: 8px; }
-    #qr-reader { width: 100%; margin: 20px auto; display: none; }
+    button:hover { background: #0056b3; }
+    #scanResult {
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>QR Code Generator & Scanner</h1>
 
-    <input type="text" id="textInput" placeholder="Masukkan atau scan teks/link...">
+  <h1>QR Code Generator & Scanner</h1>
 
-    <div class="btn-group">
-      <button class="generate-btn" onclick="generateQR()">Buat QR</button>
-      <button class="download-btn" id="downloadBtn" onclick="downloadQR()">Download QR</button>
-      <button class="scan-btn" onclick="startScan()">Scan QR</button>
-    </div>
+  <!-- Input dan Generate -->
+  <input type="text" id="textInput" placeholder="Masukkan teks / link...">
+  <br>
+  <button onclick="generateQR()">Buat QR Code</button>
+  <button onclick="downloadQR()">Download QR</button>
+  <div id="qrcode"></div>
 
-    <div id="qrcode"></div>
-    <div id="qr-reader"></div>
-  </div>
+  <!-- Scanner -->
+  <h2>Scan QR dengan Kamera</h2>
+  <div id="reader" style="width:300px;"></div>
+  <div id="scanResult">Hasil scan: -</div>
 
-  <!-- Libs -->
+  <!-- Library QRCode -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
-
+  <!-- Library Scanner -->
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  
   <script>
-    let qr, scanner;
+    let qr;
 
     function generateQR() {
-      const input = document.getElementById("textInput").value.trim();
-      if (!input) return;
-
+      let input = document.getElementById("textInput").value.trim();
+      if (!input) {
+        alert("Masukkan teks atau link dulu!");
+        return;
+      }
       document.getElementById("qrcode").innerHTML = "";
       qr = new QRCode(document.getElementById("qrcode"), {
         text: input,
-        width: 300,
-        height: 300,
-        colorDark: "#000",
-        colorLight: "#fff",
-        correctLevel: QRCode.CorrectLevel.H
+        width: 500,
+        height: 500,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
       });
-      document.getElementById("downloadBtn").style.display = "inline-block";
     }
 
     function downloadQR() {
-      const canvas = document.querySelector("#qrcode canvas");
-      if (!canvas) return;
-      const exportCanvas = document.createElement("canvas");
-      exportCanvas.width = canvas.width;
-      exportCanvas.height = canvas.height;
-      const ctx = exportCanvas.getContext("2d");
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-      ctx.drawImage(canvas, 0, 0);
-      const dataURL = exportCanvas.toDataURL("image/jpeg", 1.0);
-      const link = document.createElement("a");
-      link.href = dataURL;
-      link.download = "qrcode_hd.jpg";
+      let canvas = document.querySelector("#qrcode canvas");
+      if (!canvas) {
+        alert("Generate QR dulu!");
+        return;
+      }
+      let link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "qrcode.png";
       link.click();
     }
 
-    function startScan() {
-      const reader = document.getElementById("qr-reader");
-      reader.style.display = "block";
+    // Scanner pakai kamera
+    function onScanSuccess(decodedText) {
+      document.getElementById("scanResult").innerText = "Hasil scan: " + decodedText;
 
-      if (scanner) { scanner.clear(); scanner = null; }
-
-      scanner = new Html5Qrcode("qr-reader");
-      scanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
-          // hasil scan otomatis masuk ke input
-          document.getElementById("textInput").value = decodedText;
-          // langsung generate QR baru
-          generateQR();
-          // stop scan setelah berhasil
-          stopScan();
-        },
-        (errorMsg) => {}
-      ).catch(err => {
-        alert("Kamera tidak bisa diakses: " + err);
-      });
+      // Otomatis generate QR dari hasil scan
+      document.getElementById("textInput").value = decodedText;
+      generateQR();
     }
 
-    function stopScan() {
-      if (scanner) {
-        scanner.stop().then(() => {
-          document.getElementById("qr-reader").style.display = "none";
-        }).catch(err => console.error(err));
-      }
+    function onScanError(errorMessage) {
+      // Bisa diabaikan (kadang kamera belum fokus)
     }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: 250 }
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
   </script>
+
 </body>
 </html>
