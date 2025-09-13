@@ -18,6 +18,7 @@
       background: white;
       display: inline-block;
       border: 2px solid #ddd;
+      border-radius: 8px;
     }
     input, button {
       padding: 10px;
@@ -32,12 +33,16 @@
       border: none;
       color: white;
       border-radius: 5px;
+      font-weight: bold;
     }
     button:hover { background: #0056b3; }
     #scanResult {
       margin-top: 15px;
       font-weight: bold;
       color: green;
+    }
+    #reader {
+      display: none;
     }
   </style>
 </head>
@@ -50,10 +55,10 @@
   <br>
   <button onclick="generateQR()">Buat QR Code</button>
   <button onclick="downloadQR()">Download QR</button>
+  <button onclick="startScan()">📷 Scan Kamera</button>
   <div id="qrcode"></div>
 
   <!-- Scanner -->
-  <h2>Scan QR dengan Kamera</h2>
   <div id="reader" style="width:300px;"></div>
   <div id="scanResult">Hasil scan: -</div>
 
@@ -64,6 +69,7 @@
   
   <script>
     let qr;
+    let scanner;
 
     function generateQR() {
       let input = document.getElementById("textInput").value.trim();
@@ -74,8 +80,8 @@
       document.getElementById("qrcode").innerHTML = "";
       qr = new QRCode(document.getElementById("qrcode"), {
         text: input,
-        width: 500,
-        height: 500,
+        width: 300,
+        height: 300,
         colorDark: "#000000",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.M
@@ -88,30 +94,52 @@
         alert("Generate QR dulu!");
         return;
       }
+      let exportCanvas = document.createElement("canvas");
+      exportCanvas.width = canvas.width;
+      exportCanvas.height = canvas.height;
+      let ctx = exportCanvas.getContext("2d");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+      ctx.drawImage(canvas, 0, 0);
+
       let link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
+      link.href = exportCanvas.toDataURL("image/png");
       link.download = "qrcode.png";
       link.click();
     }
 
-    // Scanner pakai kamera
-    function onScanSuccess(decodedText) {
-      document.getElementById("scanResult").innerText = "Hasil scan: " + decodedText;
+    function startScan() {
+      const reader = document.getElementById("reader");
+      reader.style.display = "block";
 
-      // Otomatis generate QR dari hasil scan
-      document.getElementById("textInput").value = decodedText;
-      generateQR();
+      if (scanner) {
+        scanner.clear();
+        scanner = null;
+      }
+
+      scanner = new Html5Qrcode("reader");
+      scanner.start(
+        { facingMode: "environment" }, // kamera belakang
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          document.getElementById("scanResult").innerText = "Hasil scan: " + decodedText;
+          document.getElementById("textInput").value = decodedText;
+          generateQR();  // langsung jadi QR baru
+          stopScan();    // matiin kamera setelah dapet hasil
+        },
+        (errorMsg) => { }
+      ).catch(err => {
+        alert("Kamera tidak bisa diakses: " + err);
+      });
     }
 
-    function onScanError(errorMessage) {
-      // Bisa diabaikan (kadang kamera belum fokus)
+    function stopScan() {
+      if (scanner) {
+        scanner.stop().then(() => {
+          document.getElementById("reader").style.display = "none";
+        }).catch(err => console.error(err));
+      }
     }
-
-    let html5QrcodeScanner = new Html5QrcodeScanner(
-      "reader", { fps: 10, qrbox: 250 }
-    );
-    html5QrcodeScanner.render(onScanSuccess, onScanError);
   </script>
-
 </body>
 </html>
