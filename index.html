@@ -5,244 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Generator & Scanner</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      margin: 0;
-      color: #333;
+      background: #f4f4f4;
     }
-    
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-    }
-    
-    h1 {
-      margin-bottom: 30px;
-      color: #4a5568;
-      font-size: 2.2em;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .input-section {
-      margin-bottom: 30px;
-    }
-    
-    input[type="text"] {
-      padding: 15px 20px;
-      font-size: 16px;
-      margin: 10px 0;
-      width: 100%;
-      max-width: 400px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      outline: none;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.9);
-    }
-    
-    input[type="text"]:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    .button-group {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
-    
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      color: white;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      min-width: 140px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-    
-    button:hover::before {
-      left: 100%;
-    }
-    
-    .btn-generate {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-    }
-    
-    .btn-download {
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-    }
-    
-    .btn-scan {
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-    }
-    
-    .btn-stop {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-      display: none;
-    }
-    
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    #qrcode {
-      margin: 30px auto;
-      padding: 20px;
-      background: white;
-      display: inline-block;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      min-height: 50px;
-    }
-    
-    #reader {
+    h1 { margin-bottom: 15px; }
+    #qrcode, #reader {
       margin: 20px auto;
       padding: 15px;
       background: white;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      display: none;
+      display: inline-block;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      width: 80%;
       max-width: 400px;
     }
-    
+    button {
+      cursor: pointer;
+      background: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    button:hover { background: #0056b3; }
     #scanResult {
-      margin: 20px 0;
-      padding: 15px;
-      font-weight: 600;
-      color: #2d3748;
-      background: rgba(72, 187, 120, 0.1);
-      border: 2px solid #48bb78;
-      border-radius: 10px;
-      word-break: break-all;
-      min-height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
     }
-    
-    .status {
-      margin: 15px 0;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-    
-    .status.success {
-      background: rgba(72, 187, 120, 0.1);
-      color: #2f855a;
-      border: 1px solid #48bb78;
-    }
-    
-    .status.error {
-      background: rgba(245, 101, 101, 0.1);
-      color: #c53030;
-      border: 1px solid #f56565;
-    }
-    
-    .status.info {
-      background: rgba(66, 153, 225, 0.1);
-      color: #2b6cb0;
-      border: 1px solid #4299e1;
-    }
-    
-    @media (max-width: 768px) {
-      .container {
-        margin: 10px;
-        padding: 20px;
-      }
-      
-      h1 {
-        font-size: 1.8em;
-      }
-      
-      .button-group {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      button {
-        width: 100%;
-        max-width: 280px;
-      }
-    }
-    
-    .camera-permission {
-      background: rgba(255, 193, 7, 0.1);
-      border: 1px solid #ffc107;
-      color: #856404;
-      padding: 10px;
-      border-radius: 8px;
-      margin: 10px 0;
-      font-size: 14px;
+    #reader {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🔳 QR Generator & Scanner</h1>
 
-    <div class="input-section">
-      <input type="text" id="textInput" placeholder="Masukkan teks atau link untuk membuat QR code...">
-    </div>
+  <h1>QR Code Generator & Scanner</h1>
 
-    <div class="button-group">
-      <button class="btn-generate" onclick="generateQR()">📱 Buat QR Code</button>
-      <button class="btn-download" onclick="downloadQR()">💾 Download QR</button>
-      <button class="btn-scan" id="scanBtn" onclick="toggleScan()">📷 Scan Kamera</button>
-      <button class="btn-stop" id="stopBtn" onclick="stopScan()">⏹️ Stop Scan</button>
-    </div>
+  <!-- Input dan Generate -->
+  <input type="text" id="textInput" placeholder="Masukkan teks / link...">
+  <br>
+  <button onclick="generateQR()">Buat QR Code</button>
+  <button onclick="downloadQR()">Download QR</button>
+  <button onclick="startScan()">📷 Scan Kamera</button>
+  <div id="qrcode"></div>
 
-    <div id="qrcode">
-      <p style="color: #718096; font-style: italic;">QR code akan muncul di sini</p>
-    </div>
-
-    <div id="reader"></div>
-    
-    <div id="scanResult">
-      <span style="color: #718096; font-style: italic;">Hasil scan akan muncul di sini</span>
-    </div>
-
-    <div class="camera-permission" style="display: none;" id="cameraHelp">
-      💡 <strong>Tips:</strong> Jika kamera tidak berfungsi, pastikan Anda memberikan izin akses kamera dan menggunakan HTTPS atau localhost.
-    </div>
-  </div>
+  <!-- Scanner -->
+  <div id="reader" style="width:300px;"></div>
+  <div id="scanResult">Hasil scan: -</div>
 
   <!-- Library QRCode -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -252,98 +70,50 @@
   <script>
     let qr;
     let scanner;
-    let isScanning = false;
 
-    // Fungsi untuk membuat QR Code
     function generateQR() {
-      const input = document.getElementById("textInput").value.trim();
+      let input = document.getElementById("textInput").value.trim();
       if (!input) {
-        showStatus("Masukkan teks atau link terlebih dahulu!", "error");
+        alert("Masukkan teks atau link dulu!");
         return;
       }
-
-      // Clear previous QR code
       document.getElementById("qrcode").innerHTML = "";
-      
-      try {
-        qr = new QRCode(document.getElementById("qrcode"), {
-          text: input,
-          width: 280,
-          height: 280,
-          colorDark: "#2d3748",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.M
-        });
-        showStatus("QR Code berhasil dibuat!", "success");
-      } catch (error) {
-        showStatus("Gagal membuat QR Code: " + error.message, "error");
-      }
+      qr = new QRCode(document.getElementById("qrcode"), {
+        text: input,
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
     }
 
-    // Fungsi untuk download QR Code
     function downloadQR() {
-      const canvas = document.querySelector("#qrcode canvas");
+      let canvas = document.querySelector("#qrcode canvas");
       if (!canvas) {
-        showStatus("Buat QR Code terlebih dahulu!", "error");
+        alert("Generate QR dulu!");
         return;
       }
+      let exportCanvas = document.createElement("canvas");
+      exportCanvas.width = canvas.width;
+      exportCanvas.height = canvas.height;
+      let ctx = exportCanvas.getContext("2d");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+      ctx.drawImage(canvas, 0, 0);
 
-      try {
-        // Create a new canvas with white background
-        const exportCanvas = document.createElement("canvas");
-        exportCanvas.width = canvas.width;
-        exportCanvas.height = canvas.height;
-        const ctx = exportCanvas.getContext("2d");
-        
-        // Fill with white background
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-        
-        // Draw the QR code
-        ctx.drawImage(canvas, 0, 0);
-
-        // Create download link
-        const link = document.createElement("a");
-        link.href = exportCanvas.toDataURL("image/png");
-        link.download = "qrcode_" + new Date().getTime() + ".png";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showStatus("QR Code berhasil didownload!", "success");
-      } catch (error) {
-        showStatus("Gagal mendownload QR Code: " + error.message, "error");
-      }
+      let link = document.createElement("a");
+      link.href = exportCanvas.toDataURL("image/png");
+      link.download = "qrcode.png";
+      link.click();
     }
 
-    // Fungsi untuk toggle scan
-    function toggleScan() {
-      if (isScanning) {
-        stopScan();
-      } else {
-        startScan();
-      }
-    }
-
-    // Fungsi untuk mulai scan
     function startScan() {
       const reader = document.getElementById("reader");
-      const scanBtn = document.getElementById("scanBtn");
-      const stopBtn = document.getElementById("stopBtn");
-      const cameraHelp = document.getElementById("cameraHelp");
-
-      showStatus("Memulai kamera...", "info");
       reader.style.display = "block";
-      scanBtn.style.display = "none";
-      stopBtn.style.display = "inline-block";
-      cameraHelp.style.display = "block";
 
-      // Stop previous scanner if exists
       if (scanner) {
         scanner.stop().then(() => {
-          runScanner();
-        }).catch(err => {
-          console.error("Error stopping previous scanner:", err);
           runScanner();
         });
       } else {
@@ -351,126 +121,31 @@
       }
     }
 
-    // Fungsi untuk menjalankan scanner
     function runScanner() {
       scanner = new Html5Qrcode("reader");
-      
-      const config = {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1.0
-      };
-
       scanner.start(
-        { facingMode: "environment" }, // Gunakan kamera belakang
-        config,
-        (decodedText, decodedResult) => {
-          // Berhasil scan
-          console.log("Scan result:", decodedText);
-          document.getElementById("scanResult").innerHTML = `<strong>Hasil scan:</strong><br>${decodedText}`;
+        { facingMode: "environment" }, // kamera belakang
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          document.getElementById("scanResult").innerText = "Hasil scan: " + decodedText;
           document.getElementById("textInput").value = decodedText;
-          
-          showStatus("Berhasil scan! Membuat QR Code baru...", "success");
-          
-          // Generate QR code baru dari hasil scan
-          setTimeout(() => {
-            generateQR();
-          }, 500);
-          
-          // Stop scanning setelah berhasil
-          stopScan();
+          generateQR();  // langsung generate QR baru dari hasil scan
+          stopScan();    // matikan kamera setelah berhasil scan
         },
-        (errorMessage) => {
-          // Error handling - tidak perlu tampilkan semua error
-          if (errorMessage.includes("NotFoundException")) {
-            // QR Code not found - this is normal, don't show error
-            return;
-          }
-          console.log("Scan error:", errorMessage);
+        (errorMsg) => {
+          // biarkan kosong supaya ga spam error di console
         }
-      ).then(() => {
-        isScanning = true;
-        showStatus("Kamera aktif! Arahkan ke QR Code atau barcode", "info");
-      }).catch(err => {
-        console.error("Camera error:", err);
-        showStatus("Tidak dapat mengakses kamera. Pastikan izin kamera diberikan.", "error");
-        resetScanButtons();
+      ).catch(err => {
+        alert("Kamera tidak bisa diakses: " + err);
       });
     }
 
-    // Fungsi untuk stop scan
     function stopScan() {
-      if (scanner && isScanning) {
+      if (scanner) {
         scanner.stop().then(() => {
-          console.log("Scanner stopped successfully");
-          resetScanButtons();
-          showStatus("Scan dihentikan", "info");
-        }).catch(err => {
-          console.error("Error stopping scanner:", err);
-          resetScanButtons();
-        });
-      } else {
-        resetScanButtons();
+          document.getElementById("reader").style.display = "none";
+        }).catch(err => console.error(err));
       }
-    }
-
-    // Reset tombol scan
-    function resetScanButtons() {
-      const reader = document.getElementById("reader");
-      const scanBtn = document.getElementById("scanBtn");
-      const stopBtn = document.getElementById("stopBtn");
-      const cameraHelp = document.getElementById("cameraHelp");
-
-      reader.style.display = "none";
-      scanBtn.style.display = "inline-block";
-      stopBtn.style.display = "none";
-      cameraHelp.style.display = "none";
-      isScanning = false;
-      scanner = null;
-    }
-
-    // Fungsi untuk menampilkan status
-    function showStatus(message, type) {
-      // Remove existing status
-      const existingStatus = document.querySelector('.status');
-      if (existingStatus) {
-        existingStatus.remove();
-      }
-
-      // Create new status element
-      const statusDiv = document.createElement('div');
-      statusDiv.className = `status ${type}`;
-      statusDiv.textContent = message;
-      
-      // Insert after button group
-      const buttonGroup = document.querySelector('.button-group');
-      buttonGroup.parentNode.insertBefore(statusDiv, buttonGroup.nextSibling);
-
-      // Auto remove after 3 seconds
-      setTimeout(() => {
-        if (statusDiv.parentNode) {
-          statusDiv.remove();
-        }
-      }, 3000);
-    }
-
-    // Event listener untuk Enter key
-    document.getElementById("textInput").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        generateQR();
-      }
-    });
-
-    // Cleanup when page unloads
-    window.addEventListener('beforeunload', function() {
-      if (scanner && isScanning) {
-        scanner.stop();
-      }
-    });
-
-    // Check if running on HTTPS or localhost
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-      showStatus("Untuk menggunakan kamera, aplikasi harus diakses melalui HTTPS atau localhost", "error");
     }
   </script>
 </body>
