@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap" rel="stylesheet">
+  <title>FAQ - Pusat Bantuan</title>
+  <style>
+    body {
+      font-family: 'Gabarito', sans-serif;
+      background-color: #f8f8f8;
+      padding: 20px;
+      color: #333;
+      -webkit-tap-highlight-color: transparent; /* Hilangkan efek tap Android */
+      user-select: none;           /* Nonaktifkan seleksi teks */
+      -webkit-user-select: none;   /* Safari/Chrome */
+      -ms-user-select: none;       /* Internet Explorer */
+      -moz-user-select: none;      /* Firefox */
+      -webkit-touch-callout: none; /* Nonaktifkan menu pop-up saat tap di HP */
+    }
+
+    /* Tidak ada highlight ketika user tahan dan block teks */
+  *::selection {
+    background: transparent;
+    color: inherit;
+  }
+
+  /* Matikan drag image/text */
+  img, a, span, div, p {
+    -webkit-user-drag: none;
+    pointer-events: auto;
+  }
+
+    .faq-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: #fff;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: 0.3s ease;
+    }
+
+    .faq-question {
+      padding: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      position: relative;
+      transition: background 0.3s;
+    }
+
+    .faq-question:hover {
+      background-color: #f0f0f0;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      padding: 0 16px;
+      background-color: #fafafa;
+    }
+
+    .faq-answer.open {
+      padding: 12px 16px 16px;
+    }
+
+    .faq-answer p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+
+    @media (max-width: 480px) {
+      .faq-question {
+        font-size: 15px;
+      }
+
+      .faq-answer p {
+        font-size: 14px;
+      }
+    }
+    
+    .faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.arrow-container {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+}
+
+.arrow-up,
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.arrow-up {
+  border-bottom: 6px solid #666;
+  top: 3px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.arrow-down {
+  border-top: 6px solid #666;
+  bottom: 3px;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.faq-item.active .arrow-up {
+  opacity: 1;
+}
+
+.faq-item.active .arrow-down {
+  opacity: 0;
+}
+
+.faq-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.faq-header h1 {
+  font-size: 28px;
+  margin: 0;
+  color: #070b42;
+}
+
+.faq-header p {
+  font-size: 16px;
+  color: #666;
+  margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+  .faq-header h1 {
+    font-size: 22px;
+  }
+
+  .faq-header p {
+    font-size: 14px;
+  }
+}
+  </style>
+</head>
+<body>
+<div class="faq-header">
+  <h1>FAQ</h1>
+  <p>Pertanyaan seputar aplikasi FamsssPay</p>
+</div>
+  <div class="faq-container">
+
+  <div class="faq-item">
+    <div class="faq-question">
+      Bagaimana cara melakukan pembelian?
+      <div class="arrow-container">
+        <div class="arrow-up"></div>
+        <div class="arrow-down"></div>
+      </div>
+    </div>
+    <div class="faq-answer">
+      <p>
+        <b>Topup Saldo Via QRIS</b><br>
+        Pilih pilihan jenis topup saldo melalalui QRIS Merchant/ QRIS Otomatis.<br><br>
+        <b>Isi Form Order Nomor Telepon / ID</b><br>
+        Pilih produk yang ingin dipesan.<br><br>
+        <b>Klik Bayar</b><br>
+        Menggunakan Saldo Akun, jika saldo tidak sesuai nominal pembelian Produk tidak bisa dilanjutkan<br><br>
+        <b>Selesai</b><br>
+        Jika sudah mengikuti sesuai prosedur, produk digital yang dipesan akan diproses secara otomatis.
+      </p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      Bisakah saya melakukan pembelian tanpa harus mendaftar atau masuk ke akun?
+      <div class="arrow-container">
+        <div class="arrow-up"></div>
+        <div class="arrow-down"></div>
+      </div>
+    </div>
+    <div class="faq-answer">
+      <p>Famsss Tidak bisa melakukan pembelian jika belum mendaftar / Masuk ke akun.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      Bagaimana jika produk mengalami kendala?
+      <div class="arrow-container">
+        <div class="arrow-up"></div>
+        <div class="arrow-down"></div>
+      </div>
+    </div>
+    <div class="faq-answer">
+      <p>Famsss bisa menunggu hingga produk normal kembali dan order ulang. <br><br>Biasanya produk terkendala pada jam <b>Maintenance 23.00 - 00.30 WIB</b> Karena jam Server melakukan Rekap Harian. <br><br>Jika masih terkendala pada saat produk sudah Normal, Konfirmasikan ke pusat Bantuan Aplikasi.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      Fungsi enkripsi exfams cotery?
+      <div class="arrow-container">
+        <div class="arrow-up"></div>
+        <div class="arrow-down"></div>
+      </div>
+    </div>
+    <div class="faq-answer">
+      <p><b>Tujuan Enkripsi :</b><BR>
+Tujuan utama enkripsi adalah untuk melindungi kerahasiaan informasi, baik saat data sedang dikirimkan atau disimpan. 
+<br><br><b>Proses Enkripsi:</b><br>
+Data yang akan dienkripsi (disebut plaintext) diubah menggunakan algoritma enkripsi menjadi ciphertext, yaitu data yang teracak dan tidak terbaca. 
+<br><br><b>Proses Dekripsi:</b><br>
+Untuk membaca kembali data yang terenkripsi, diperlukan kunci dekripsi yang sesuai dengan algoritma enkripsi yang digunakan.
+<br><br>yang berarti fungsi dari enkripsi exfams cotery ialah berupa data keamanan agar pengguna yang menggunakan aplikasi dapat transaksi lancar bersifat Private.
+</p>    
+</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      Sudah Scan QRIS kenapa saldo tidak masuk?
+      <div class="arrow-container">
+        <div class="arrow-up"></div>
+        <div class="arrow-down"></div>
+      </div>
+    </div>
+    <div class="faq-answer">
+      <p>Pastikan Famsss sudah mengikuti prosedur yang telah diberikan Cara penggunaan QRIS Merchant atau Penggunaan QRIS Otomatis.<br><br>Jika ada kendala pada transaksi, Hubungi MinFams melalui Pusat Bantuan Aplikasi.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      Scan Melalui QRIS Merchant kenapa tidak masuk?
+      <div class="arrow-container">
+        <div class="arrow-up"></div>
+        <div class="arrow-down"></div>
+      </div>
+    </div>
+    <div class="faq-answer">
+      <p>Pastikan Famsss sudah konfirmasi Bukti pembayaran pada menu QRIS Merchant. <br><br>Pastikan juga jam Scan QRIS Merchant hanya sampai <b>Pukul 22.00 WIB</b> <BR><BR> Jika Famsss melakukan Scan QRIS melebihi jam yang ditentukan, Saldo akan <b>dikonfirmasi esok harinya pada pukul 08.00 WIB</b><br><br>MinFams sarankan untuk <b>Menggunakan QRIS Otomatis</b> karena saldo langsung masuk tanpa perlu konfirmasi.<br><br>Jika saldo belum juga masuk ke Akun pada jam yang ditentukan, Hubungi Pusat bantuan Aplikasi.</p>
+    </div>
+  </div>
+
+  </div>
+
+  <script>
+    document.querySelectorAll('.faq-question').forEach((item) => {
+      item.addEventListener('click', () => {
+        const parent = item.parentElement;
+        parent.classList.toggle('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
