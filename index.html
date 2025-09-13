@@ -113,10 +113,15 @@
       reader.style.display = "block";
 
       if (scanner) {
-        scanner.clear();
-        scanner = null;
+        scanner.stop().then(() => {
+          runScanner();
+        });
+      } else {
+        runScanner();
       }
+    }
 
+    function runScanner() {
       scanner = new Html5Qrcode("reader");
       scanner.start(
         { facingMode: "environment" }, // kamera belakang
@@ -124,10 +129,12 @@
         (decodedText) => {
           document.getElementById("scanResult").innerText = "Hasil scan: " + decodedText;
           document.getElementById("textInput").value = decodedText;
-          generateQR();  // langsung jadi QR baru
-          stopScan();    // matiin kamera setelah dapet hasil
+          generateQR();  // langsung generate QR baru dari hasil scan
+          stopScan();    // matikan kamera setelah berhasil scan
         },
-        (errorMsg) => { }
+        (errorMsg) => {
+          // biarkan kosong supaya ga spam error di console
+        }
       ).catch(err => {
         alert("Kamera tidak bisa diakses: " + err);
       });
