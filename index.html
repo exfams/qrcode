@@ -89,24 +89,31 @@
     }
 
     function downloadQR() {
-      let canvas = document.querySelector("#qrcode canvas");
-      if (!canvas) {
-        alert("Generate QR dulu!");
-        return;
-      }
-      let exportCanvas = document.createElement("canvas");
-      exportCanvas.width = canvas.width;
-      exportCanvas.height = canvas.height;
-      let ctx = exportCanvas.getContext("2d");
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-      ctx.drawImage(canvas, 0, 0);
+  let canvas = document.querySelector("#qrcode canvas");
+  if (!canvas) {
+    alert("Generate QR dulu!");
+    return;
+  }
 
-      let link = document.createElement("a");
-      link.href = exportCanvas.toDataURL("image/png");
-      link.download = "qrcode.png";
-      link.click();
-    }
+  // Skala 300 DPI (sekitar 3.125x dari 96dpi layar)
+  let scale = 3.125;
+  let exportCanvas = document.createElement("canvas");
+  exportCanvas.width = canvas.width * scale;
+  exportCanvas.height = canvas.height * scale;
+
+  let ctx = exportCanvas.getContext("2d");
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+  // Render ulang dengan kualitas HD
+  ctx.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
+
+  let link = document.createElement("a");
+  link.href = exportCanvas.toDataURL("image/png", 1.0); // kualitas max
+  link.download = "qrcode_hd.png";
+  link.click();
+}
+
 
     function startScan() {
       const reader = document.getElementById("reader");
